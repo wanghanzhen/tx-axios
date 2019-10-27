@@ -16,6 +16,7 @@ export interface AxiosRequestConfig {
   timeout?: number
   transformRequest?: AxiosTransformer | AxiosTransformer[]
   transformResponse?: AxiosTransformer | AxiosTransformer[]
+  cancelToken?: CancelToken
 
   [propName: string]: any,
 }
@@ -72,6 +73,9 @@ export interface AxiosInstance extends Axios {
 
 export interface AxiosStatic extends AxiosInstance {
   create(config?: AxiosRequestConfig): AxiosInstance
+
+  CancelToken: CancelTokenStatic,
+  isCancel(value: any): boolean
 }
 
 // 通用拦截器  request时T为AxiosRequestConfig response时T为AxiosResponse
@@ -92,4 +96,37 @@ export interface RejectedFn {
 
 export interface AxiosTransformer {
   (data: any, headers?: any): any
+}
+
+export interface CancelToken {
+  promise: Promise<Cancel>
+  reason?: Cancel
+
+  thorwIfRequested(): void
+}
+
+export interface Canceler {
+  (message?: string): void
+}
+
+export interface CancelExecutor {
+  (cancel: Canceler): void
+}
+
+export interface CancalTokenSource {
+  token: CancelToken,
+  cancel: Canceler,
+}
+
+export interface CancelTokenStatic {
+  new(executor: CancelExecutor): CancelToken
+  source(): CancalTokenSource,
+}
+
+export interface Cancel {
+  message?: string
+}
+
+export interface CancelStatic {
+  new(message?: string): Cancel
 }
